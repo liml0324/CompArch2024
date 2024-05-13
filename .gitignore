@@ -1,0 +1,5 @@
+*.zip
+*.pdf
+comparch24spring-verilog/*
+*.wdb
+comparch24spring-verilog

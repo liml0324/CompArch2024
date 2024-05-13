@@ -1,0 +1,39 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../lab2.srcs/sources_1/new/ALU.v" \
+"../../../../lab2.srcs/sources_1/new/IdExSegReg/AddrEx.v" \
+"../../../../lab2.srcs/sources_1/new/ExMemSegReg/AddrMem.v" \
+"../../../../lab2.srcs/sources_1/new/MemWbSegReg/AddrWb.v" \
+"../../../../lab2.srcs/sources_1/new/IdExSegReg/BrTarget.v" \
+"../../../../lab2.srcs/sources_1/new/BranchDecision.v" \
+"../../../../lab2.srcs/sources_1/new/CSR/CSR_EX.v" \
+"../../../../lab2.srcs/sources_1/new/CSR/CSR_Regfile.v" \
+"../../../../lab2.srcs/sources_1/new/ControllerDecoder.v" \
+"../../../../lab2.srcs/sources_1/new/IdExSegReg/CtrlEx.v" \
+"../../../../lab2.srcs/sources_1/new/ExMemSegReg/CtrlMem.v" \
+"../../../../lab2.srcs/sources_1/new/MemWbSegReg/CtrlWb.v" \
+"../../../../lab2.srcs/sources_1/new/Cache/DataCache.v" \
+"../../../../lab2.srcs/sources_1/new/DataExtend.v" \
+"../../../../lab2.srcs/sources_1/new/GeneralRegister.v" \
+"../../../../lab2.srcs/sources_1/new/Hazard.v" \
+"../../../../lab2.srcs/sources_1/new/IfIdSegReg/IR.v" \
+"../../../../lab2.srcs/sources_1/new/IdExSegReg/Imm.v" \
+"../../../../lab2.srcs/sources_1/new/ImmExtend.v" \
+"../../../../lab2.srcs/sources_1/new/Cache/InstructionCache.v" \
+"../../../../lab2.srcs/sources_1/new/NPCGenerator.v" \
+"../../../../lab2.srcs/sources_1/new/IdExSegReg/Op1.v" \
+"../../../../lab2.srcs/sources_1/new/PC.v" \
+"../../../../lab2.srcs/sources_1/new/IdExSegReg/PcEx.v" \
+"../../../../lab2.srcs/sources_1/new/IfIdSegReg/PcId.v" \
+"../../../../lab2.srcs/sources_1/new/RV32ICore.v" \
+"../../../../lab2.srcs/sources_1/new/IdExSegReg/Reg2Ex.v" \
+"../../../../lab2.srcs/sources_1/new/ExMemSegReg/Reg2Mem.v" \
+"../../../../lab2.srcs/sources_1/new/ExMemSegReg/Result.v" \
+"../../../../lab2.srcs/sources_1/new/MemWbSegReg/WbData.v" \
+"../../../testBench.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
