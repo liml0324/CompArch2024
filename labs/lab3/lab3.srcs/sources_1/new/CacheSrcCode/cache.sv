@@ -1,9 +1,9 @@
-`define LRU
+// `define LRU
 
 module cache #(
     parameter  LINE_ADDR_LEN = 5, // line内地址长度，决定了每个line具有2^3个word
-    parameter  SET_ADDR_LEN  = 1, // 组地址长度，决定了一共有2^3=8组
-    parameter  TAG_ADDR_LEN  = 5, // tag长度
+    parameter  SET_ADDR_LEN  = 2, // 组地址长度，决定了一共有2^3=8组
+    parameter  TAG_ADDR_LEN  = 4, // tag长度
     parameter  WAY_CNT       = 2  // 组相连度，决定了每组中有多少路line，这里是直接映射型cache，因此该参数没用到
 )(
     input  clk, rst,
@@ -121,7 +121,7 @@ always @(posedge clk or posedge rst) begin
             lru_way[i] <= 0;
         end
     end
-    else if(cache_stat == IDLE && cache_hit) begin
+    else if(cache_stat == IDLE && cache_hit && (wr_req | rd_req)) begin
         for(integer i = 0; i < WAY_CNT; i++) begin
             if(lru[i][set_addr] > lru[way_addr][set_addr]) begin    // 如果有路的LRU计数器比命中的路的大，则减1，相当于整体往前移动
                 lru[i][set_addr] <= lru[i][set_addr] - 1;

@@ -1,0 +1,45 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/ALU.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IdExSegReg/AddrEx.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/ExMemSegReg/AddrMem.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/MemWbSegReg/AddrWb.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IdExSegReg/BrTarget.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/BranchDecision.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/CSR/CSR_EX.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/CSR/CSR_Regfile.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/ControllerDecoder.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IdExSegReg/CtrlEx.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/ExMemSegReg/CtrlMem.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/MemWbSegReg/CtrlWb.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/DataExtend.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/GeneralRegister.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/Hazard.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IfIdSegReg/IR.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IdExSegReg/Imm.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/ImmExtend.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/Cache/InstructionCache.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/NPCGenerator.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IdExSegReg/Op1.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/PC.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IdExSegReg/PcEx.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IfIdSegReg/PcId.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/RV32ICore.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/IdExSegReg/Reg2Ex.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/ExMemSegReg/Reg2Mem.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/ExMemSegReg/Result.v" \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/MemWbSegReg/WbData.v" \
+
+sv xil_defaultlib  \
+"../../../../lab3.srcs/sources_1/new/CacheSrcCode/cache.sv" \
+"../../../../lab3.srcs/sources_1/new/CacheSrcCode/main_mem.sv" \
+"../../../../lab3.srcs/sources_1/new/CacheSrcCode/mem.sv" \
+
+verilog xil_defaultlib  \
+"../../../../lab3.srcs/sources_1/new/CPUSrcCode/Testbench/cpu_tb.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
