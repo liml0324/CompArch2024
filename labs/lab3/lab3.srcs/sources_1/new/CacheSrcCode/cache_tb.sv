@@ -14437,7 +14437,7 @@ cache #(
     .LINE_ADDR_LEN  ( 5             ),
     .SET_ADDR_LEN   ( 3             ),
     .TAG_ADDR_LEN   ( 12            ),
-    .WAY_CNT        ( 2             )
+    .WAY_CNT        ( 3             )
 ) cache_test_instance (
     .clk            ( clk           ),
     .rst            ( rst           ),
