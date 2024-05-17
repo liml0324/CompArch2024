@@ -1,4 +1,4 @@
-`define LRU
+// `define LRU
 
 module cache #(
     parameter  LINE_ADDR_LEN = 2, // line内地址长度，决定了每个line具有2^3个word
