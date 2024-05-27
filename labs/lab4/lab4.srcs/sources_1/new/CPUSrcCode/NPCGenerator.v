@@ -1,3 +1,4 @@
+`define BTB
 `timescale 1ns / 1ps
 //  功能说明
     //  根据跳转信号，决定执行的下一条指令地址
@@ -18,8 +19,9 @@
 module NPC_Generator(
     input wire [31:0] PC, jal_target, jalr_target, br_target, PC_EX, NPC_EX,    // 这里PC_EX接线时应该接PC_EX-4
     input wire [2:0] br_type_EX,
-    input wire jal, jalr, br, pred_err, clk, rst,
-    output reg [31:0] NPC
+    input wire jal, jalr, br, clk, rst, bubbleE,
+    output reg [31:0] NPC,
+    output reg pred_err
     );
 
     // TODO: Complete this module
@@ -37,11 +39,49 @@ module NPC_Generator(
     wire [31:0] PC_IF;
     integer i;
 
-    
+    reg [31:0] fail_pred, totol_pred, cycles;
+    always @(posedge clk or posedge rst) begin
+        if(rst) begin
+            fail_pred = 0;
+            totol_pred = 0;
+            cycles = 0;
+        end
+        else if(!bubbleE) begin // 这里因为pred_err是根据EX阶段的结果计算的，所以在EX阶段bubble时不应该增加，否则会重复计算
+            cycles = cycles + 1;
+            if(pred_err) begin
+                fail_pred = fail_pred + 1;
+            end
+            if(|br_type_EX) begin
+                totol_pred = totol_pred + 1;
+            end
+        end
+    end
 
     assign PC_IF = PC - 4;
 
-    
+    always @(*) begin
+        if(|br_type_EX) begin
+            if(br)  begin
+                if(NPC_EX != br_target) begin
+                    pred_err = 1;
+                end
+                else begin
+                    pred_err = 0;
+                end
+            end  
+            else begin
+                if(NPC_EX != PC_EX + 4) begin
+                    pred_err = 1;
+                end
+                else begin
+                    pred_err = 0;
+                end
+            end
+        end
+        else    begin
+            pred_err = 0;
+        end
+    end
 
     always @(posedge clk or posedge rst) begin
         if(rst) begin
@@ -76,15 +116,17 @@ module NPC_Generator(
                 NPC = PC_EX + 4;
             end
         end
-        if(jalr == 1'b1)    begin
+        else if(jalr == 1'b1)    begin
             NPC = jalr_target;
         end
         else if(jal == 1'b1) begin
             NPC = jal_target;
         end
-        else if(BTB_valid[PC_IF[BTB_ADDR_LEN + 1:2]] == 1 && BTB_history[PC_IF[BTB_ADDR_LEN + 1:2]] == 1 && BTB_tag[PC_IF[BTB_ADDR_LEN + 1:2]] == PC_IF[31:BTB_ADDR_LEN + 2]) begin
+    `ifdef BTB
+        else if(BTB_valid[PC_IF[BTB_ADDR_LEN + 1:2]] && BTB_history[PC_IF[BTB_ADDR_LEN + 1:2]] && BTB_tag[PC_IF[BTB_ADDR_LEN + 1:2]] == PC_IF[31:BTB_ADDR_LEN + 2]) begin
             NPC = BTB_target[PC_IF[BTB_ADDR_LEN + 1:2]];
         end
+    `endif
         else begin
             NPC = PC;
         end

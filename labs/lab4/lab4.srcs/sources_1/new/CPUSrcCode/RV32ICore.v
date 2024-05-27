@@ -15,7 +15,7 @@ module RV32ICore(
     input wire [31:0] CPU_Debug_InstCache_WD2,
     input wire [ 3:0] CPU_Debug_InstCache_WE2,
     output wire [31:0] CPU_Debug_InstCache_RD2,
-    output wire end_signal
+    output reg end_signal
     );
     
 	//wire values definitions
@@ -105,7 +105,18 @@ module RV32ICore(
     assign CSR_zimm = {27'b0, inst_ID[19:15]}; // zimm zero extension
     assign CSR_addr = {inst_ID[31:20]};
     
-    assign end_signal = (jal && inst_ID[11:7] == 5'b00000) ? 1 : 0;
+    // assign end_signal = (jal && inst_ID[11:7] == 5'b00000) ? 1 : 0;
+
+    always @(posedge CPU_CLK or posedge CPU_RST) begin
+        if(CPU_RST) begin
+            end_signal <= 0;
+        end
+        else begin
+            if(inst_ID == 32'h0000006f) begin
+                end_signal <= 1;
+            end
+        end
+    end
 
 
     //Module connections
@@ -128,6 +139,7 @@ module RV32ICore(
         .br(br),
         .clk(CPU_CLK),
         .rst(CPU_RST),
+        .bubbleE(bubbleE),
         .NPC(NPC)
     );
 
@@ -233,7 +245,9 @@ module RV32ICore(
         .bubbleE(bubbleE),
         .flushE(flushE),
         .PC_ID(PC_ID),
-        .PC_EX(PC_EX)
+        .NPC_ID(NPC_ID),
+        .PC_EX(PC_EX),
+        .NPC_EX(NPC_EX)
     );
 
     BR_Target_EX BR_Target_EX1(
@@ -339,8 +353,7 @@ module RV32ICore(
         .br(br),
         .clk(CPU_CLK),
         .rst(CPU_RST),
-        .bubbleE(bubbleE),
-        .pred_err(pred_err)
+        .bubbleE(bubbleE)
     );
     
     

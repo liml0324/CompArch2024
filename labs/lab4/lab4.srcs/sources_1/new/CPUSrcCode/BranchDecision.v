@@ -15,29 +15,10 @@ module BranchDecision(
     input wire [31:0] reg1, reg2, PC_EX_4, NPC_EX, br_target,
     input wire [2:0] br_type,
     input wire clk, rst, bubbleE,
-    output reg br, pred_err
+    output reg br
     );
 
     // TODO: Complete this module
-
-    reg [31:0] success_pred, fail_pred, cycles;
-
-    always @(posedge clk or posedge rst) begin
-        if(rst) begin
-            success_pred <= 0;
-            fail_pred <= 0;
-            cycles <= 0;
-        end
-        else if(|br_type && !bubbleE) begin     // 有branch指令，且不是bubble
-            if(pred_err)    begin
-                fail_pred <= fail_pred + 1;
-            end
-            else begin
-                success_pred <= success_pred + 1;
-            end
-            cycles = cycles + 1;
-        end
-    end
 
     always @ (*)
     begin
@@ -54,18 +35,6 @@ module BranchDecision(
 
             default: br = 0;
         endcase
-    end
-
-    always @ (*)    begin
-        if(br && NPC_EX != br_target)   begin
-            pred_err = 1;
-        end
-        else if(!br && NPC_EX != PC_EX_4)    begin
-            pred_err = 1;
-        end
-        else    begin
-            pred_err = 0;
-        end
     end
 
 endmodule
