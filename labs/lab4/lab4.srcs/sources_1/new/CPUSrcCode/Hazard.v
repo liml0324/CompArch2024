@@ -10,7 +10,7 @@
     // reg_dstE          EX阶段的目的reg地址
     // reg_dstM          MEM阶段的目的reg地址
     // reg_dstW          WB阶段的目的reg地址
-    // br                是否branch
+    // pred_err          是否预测失败
     // jalr              是否jalr
     // jal               是否jal
     // wb_select         写回寄存器的值的来源（Cache内容或者ALU计算结果）
@@ -37,7 +37,7 @@
 module HarzardUnit(
     input wire rst,
     input wire [4:0] reg1_srcD, reg2_srcD, reg1_srcE, reg2_srcE, reg_dstE, reg_dstM, reg_dstW,
-    input wire br, jalr, jal,
+    input wire pred_err, jalr, jal,
     input wire wb_select,
     input wire reg_write_en_MEM,
     input wire reg_write_en_WB,
@@ -130,7 +130,7 @@ module HarzardUnit(
             bubbleE = 1;
             flushE = 0;
         end
-        else if (br || jalr)    begin
+        else if (pred_err || jalr)    begin
             bubbleE = 0;
             flushE = 1;
         end
@@ -154,7 +154,7 @@ module HarzardUnit(
             bubbleD = 1;
             flushD = 0;
         end
-        else if (jal || jalr || br)   begin
+        else if (jal || jalr || pred_err)   begin
             bubbleD = 0;
             flushD = 1;
         end

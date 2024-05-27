@@ -14,7 +14,8 @@ module RV32ICore(
     input wire [31:0] CPU_Debug_InstCache_A2,
     input wire [31:0] CPU_Debug_InstCache_WD2,
     input wire [ 3:0] CPU_Debug_InstCache_WE2,
-    output wire [31:0] CPU_Debug_InstCache_RD2
+    output wire [31:0] CPU_Debug_InstCache_RD2,
+    output wire end_signal
     );
     
 	//wire values definitions
@@ -22,7 +23,7 @@ module RV32ICore(
     wire [31:0] jal_target, br_target;
     wire jal, br;
     wire jalr_ID, jalr_EX;
-    wire [31:0] NPC, PC_IF, PC_4, PC_ID, PC_EX;
+    wire [31:0] NPC, NPC_ID, NPC_EX, PC_IF, PC_4, PC_ID, PC_EX;
     wire [31:0] inst_ID;
     wire reg_write_en_ID, reg_write_en_EX, reg_write_en_MEM, reg_write_en_WB;
     wire [4:0] reg1_src_EX;
@@ -49,6 +50,7 @@ module RV32ICore(
     wire [31:0] reg1_forwarding, reg2_forwarding;
     wire op1_src_EX, op2_src_EX;
     wire miss;
+    wire pred_err;
     
     // CSR Instruction 
     wire [31:0] CSR_data_read, CSR_data_EX;
@@ -103,6 +105,7 @@ module RV32ICore(
     assign CSR_zimm = {27'b0, inst_ID[19:15]}; // zimm zero extension
     assign CSR_addr = {inst_ID[31:20]};
     
+    assign end_signal = (jal && inst_ID[11:7] == 5'b00000) ? 1 : 0;
 
 
     //Module connections
@@ -113,12 +116,18 @@ module RV32ICore(
 
     NPC_Generator NPC_Generator1(
         .PC(PC_4),
+        .PC_EX(PC_EX-4),
+        .NPC_EX(NPC_EX),
+        .pred_err(pred_err),
         .jal_target(jal_target),
         .jalr_target(ALU_out),
         .br_target(br_target),
+        .br_type_EX(br_type_EX),
         .jal(jal),
         .jalr(jalr_EX),
         .br(br),
+        .clk(CPU_CLK),
+        .rst(CPU_RST),
         .NPC(NPC)
     );
 
@@ -142,7 +151,9 @@ module RV32ICore(
         .bubbleD(bubbleD),
         .flushD(flushD),
         .PC_IF(PC_4),
-        .PC_ID(PC_ID)
+        .NPC_IF(NPC),
+        .PC_ID(PC_ID),
+        .NPC_ID(NPC_ID)
     );
 
 
@@ -322,7 +333,14 @@ module RV32ICore(
         .reg1(reg1_forwarding),
         .reg2(reg2_forwarding),
         .br_type(br_type_EX),
-        .br(br)
+        .br_target(br_target),
+        .NPC_EX(NPC_EX),
+        .PC_EX_4(PC_EX),
+        .br(br),
+        .clk(CPU_CLK),
+        .rst(CPU_RST),
+        .bubbleE(bubbleE),
+        .pred_err(pred_err)
     );
     
     
@@ -432,7 +450,7 @@ module RV32ICore(
         .reg_dstE(reg_dest_EX),
         .reg_dstM(reg_dest_MEM),
         .reg_dstW(reg_dest_WB),
-        .br(br),
+        .pred_err(pred_err),
         .jalr(jalr_EX),
         .jal(jal),
         .wb_select(wb_select_EX),
