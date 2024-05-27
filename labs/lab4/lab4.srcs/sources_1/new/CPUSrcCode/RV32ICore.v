@@ -24,7 +24,7 @@ module RV32ICore(
     wire jal, br;
     wire jalr_ID, jalr_EX;
     wire [31:0] NPC, NPC_ID, NPC_EX, PC_IF, PC_4, PC_ID, PC_EX;
-    wire [31:0] inst_ID;
+    wire [31:0] inst_ID, inst_EX;
     wire reg_write_en_ID, reg_write_en_EX, reg_write_en_MEM, reg_write_en_WB;
     wire [4:0] reg1_src_EX;
     wire [4:0] reg2_src_EX;
@@ -112,7 +112,7 @@ module RV32ICore(
             end_signal <= 0;
         end
         else begin
-            if(inst_ID == 32'h0000006f) begin
+            if(inst_EX == 32'h0000006f) begin
                 end_signal <= 1;
             end
         end
@@ -246,8 +246,10 @@ module RV32ICore(
         .flushE(flushE),
         .PC_ID(PC_ID),
         .NPC_ID(NPC_ID),
+        .inst_ID(inst_ID),
         .PC_EX(PC_EX),
-        .NPC_EX(NPC_EX)
+        .NPC_EX(NPC_EX),
+        .inst_EX(inst_EX)
     );
 
     BR_Target_EX BR_Target_EX1(
@@ -347,13 +349,7 @@ module RV32ICore(
         .reg1(reg1_forwarding),
         .reg2(reg2_forwarding),
         .br_type(br_type_EX),
-        .br_target(br_target),
-        .NPC_EX(NPC_EX),
-        .PC_EX_4(PC_EX),
-        .br(br),
-        .clk(CPU_CLK),
-        .rst(CPU_RST),
-        .bubbleE(bubbleE)
+        .br(br)
     );
     
     

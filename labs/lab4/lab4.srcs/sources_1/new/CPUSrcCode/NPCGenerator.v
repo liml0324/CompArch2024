@@ -1,4 +1,5 @@
-`define BTB
+// `define BTB
+`define BHT
 `timescale 1ns / 1ps
 //  功能说明
     //  根据跳转信号，决定执行的下一条指令地址
@@ -37,7 +38,11 @@ module NPC_Generator(
     reg BTB_valid[BTB_SIZE - 1:0];
     reg BTB_history[BTB_SIZE - 1:0];
     wire [31:0] PC_IF;
-    integer i;
+
+    localparam BHT_ADDR_LEN = 12;   // 4096项BHT
+    localparam BHT_SIZE = 1 << BHT_ADDR_LEN;
+
+    reg [1:0] BHT_history[BHT_SIZE - 1:0];
 
     reg [31:0] fail_pred, totol_pred, cycles;
     always @(posedge clk or posedge rst) begin
@@ -83,6 +88,7 @@ module NPC_Generator(
         end
     end
 
+    integer i;
     always @(posedge clk or posedge rst) begin
         if(rst) begin
             for(i = 0; i < BTB_SIZE; i = i + 1) begin
@@ -105,7 +111,26 @@ module NPC_Generator(
         end
     end
 
-
+    integer j;
+    always @(posedge clk or posedge rst) begin
+        if(rst) begin
+            for(j = 0; j < BHT_SIZE; j = j + 1) begin
+                BHT_history[j] = 2'b10;
+            end
+        end
+        else    begin   // 这里00和01预测跳转，10和11预测不跳转
+            if(br)  begin
+                if(BHT_history[PC_EX[BHT_ADDR_LEN + 1 : 2]] > 2'b00)    begin
+                    BHT_history[PC_EX[BHT_ADDR_LEN + 1 : 2]] = BHT_history[PC_EX[BHT_ADDR_LEN + 1 : 2]] - 2'b01;
+                end
+            end
+            else begin
+                if(BHT_history[PC_EX[BHT_ADDR_LEN + 1 : 2]] < 2'b11)    begin
+                    BHT_history[PC_EX[BHT_ADDR_LEN + 1 : 2]] = BHT_history[PC_EX[BHT_ADDR_LEN + 1 : 2]] + 2'b01;
+                end
+            end
+        end
+    end
 
     always @(*) begin
         if(pred_err)    begin
@@ -124,6 +149,11 @@ module NPC_Generator(
         end
     `ifdef BTB
         else if(BTB_valid[PC_IF[BTB_ADDR_LEN + 1:2]] && BTB_history[PC_IF[BTB_ADDR_LEN + 1:2]] && BTB_tag[PC_IF[BTB_ADDR_LEN + 1:2]] == PC_IF[31:BTB_ADDR_LEN + 2]) begin
+            NPC = BTB_target[PC_IF[BTB_ADDR_LEN + 1:2]];
+        end
+    `endif
+    `ifdef BHT
+        else if(BTB_valid[PC_IF[BTB_ADDR_LEN + 1:2]] && BTB_tag[PC_IF[BTB_ADDR_LEN + 1:2]] == PC_IF[31:BTB_ADDR_LEN + 2] && !BHT_history[PC_IF[BHT_ADDR_LEN+1:2]][1]) begin
             NPC = BTB_target[PC_IF[BTB_ADDR_LEN + 1:2]];
         end
     `endif

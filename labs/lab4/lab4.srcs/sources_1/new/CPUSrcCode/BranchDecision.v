@@ -12,9 +12,8 @@
 
 `include "Parameters.v"   
 module BranchDecision(
-    input wire [31:0] reg1, reg2, PC_EX_4, NPC_EX, br_target,
+    input wire [31:0] reg1, reg2,
     input wire [2:0] br_type,
-    input wire clk, rst, bubbleE,
     output reg br
     );
 
