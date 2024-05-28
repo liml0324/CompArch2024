@@ -115,7 +115,7 @@ module NPC_Generator(
     always @(posedge clk or posedge rst) begin
         if(rst) begin
             for(j = 0; j < BHT_SIZE; j = j + 1) begin
-                BHT_history[j] = 2'b10;
+                BHT_history[j] = 2'b00;
             end
         end
         else    begin   // 这里00和01预测跳转，10和11预测不跳转
