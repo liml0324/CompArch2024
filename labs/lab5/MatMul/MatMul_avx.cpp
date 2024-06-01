@@ -45,13 +45,12 @@ int main(void) {
     return 0;
 }
 void gemm_verify(float *A, float *B, float *C) {
+    memset(C, 0, N * N * sizeof(float));
     for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            float sum = 0;
-            for (int k = 0; k < N; k++) {
-                sum += A[i * N + k] * B[k * N + j];
+        for (int k = 0; k < N; k++) {
+            for (int j = 0; j < N; j++) {
+                C[i * N + j] += A[i * N + k] * B[k * N + j];
             }
-            C[i * N + j] = sum;
         }
     }
 }
