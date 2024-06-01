@@ -55,7 +55,8 @@ chime2: LV      V4, Rb_im
 chime3: SUBV    V5, V5, V6
         SV      Rc_re, V5       ; 启动开销20周期
 chime4: MULTV   V5, V1, V4
-        LV      V1, Ra_re       ; 这里load下一段的V1，启动开销23周期（这里实际有数据相关，在乘法计算完a_re*b_im后，才能load下一个a_re）
+        LV      V1, Ra_re       ; 这里load下一段的V1，启动开销23周期（这里实际有数据相关，在乘法计算完a_re*b_im后，
+                                ; 才能load下一个a_re）
 chime5: MULTV   V6, V2, V3     
         LV      V2, Rb_re       ; 这里load下一段的V2，启动开销23周期
 chime6: ADDV    V5, V5, V6
@@ -64,7 +65,7 @@ chime6: ADDV    V5, V5, V6
 这里有6个chime，由于一次迭代中有6个访存指令，而只有一个存储器流水线，因此至少有6个chime。这一结果已是最优。
 根据Strip Mining的计算式：
 $T_n = \lceil \frac{n}{MVL} \rceil \times(T_{loop} + T_{start}) + n \times T_{chime}$
-这里忽略$T_{loop}$，那么计算300个值的总开销为：
+这里题目中未给出串行指令的执行时间，因此忽略$T_{loop}$，那么计算300个值的总开销为：
 $5 \times (15+23+20+23+23+20) + 300 \times 6 = 2420$
 如果将一组实部和虚部看作一个复数值，则平均每个复数值的开销为$\frac{2420}{300} \simeq 8.07$周期
 如果将实部或虚部看作一个复数值（即认为计算了600个值），那么平均每个值的开销为上面的一半。

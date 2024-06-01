@@ -5,3 +5,5 @@ comparch24spring-verilog/*
 comparch24spring-verilog
 PB21111639_李牧龙_*
 *.dcp
+*.exe
+.vscode
