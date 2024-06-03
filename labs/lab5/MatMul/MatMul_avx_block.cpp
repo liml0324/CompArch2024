@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include <immintrin.h>
-// #define VERIFY
+#define VERIFY
 
 using namespace std;
 
@@ -61,6 +61,22 @@ void gemm_verify(float *A, float *B, float *C) {
         }
     }
 }
+
+void gemm_avx_block_operator(float *A, float *B, float *C, int size) {
+    __m256 sum, a, b;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            sum = _mm256_setzero_ps();
+            for (int k = 0; k < size; k += 8) {
+                a = _mm256_loadu_ps(A + i * N + k);
+                b = _mm256_loadu_ps(B + j * N + k);
+                sum = _mm256_fmadd_ps(a, b, sum);
+            }
+            C[i * N + j] += _mm256_reduce_add_ps(sum);
+        }
+    }
+}
+
 float _mm256_reduce_add_ps(__m256 a) {
     return a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7];
 }
@@ -72,21 +88,10 @@ void gemm_avx_block(float *A, float *B, float *C, int blockSize) {
             B_T[i * N + j] = B[j * N + i];
         }
     }
-    __m256 sum, a, b;
     for (int i = 0; i < N; i += blockSize) {
         for (int j = 0; j < N; j += blockSize) {
             for (int k = 0; k < N; k += blockSize) {
-                for (int ii = i; ii < i + blockSize; ++ii) {
-                    for (int jj = j; jj < j + blockSize; ++jj) {
-                        sum = _mm256_setzero_ps();
-                        for (int kk = k; kk < k + blockSize; kk += 8) {
-                            a = _mm256_loadu_ps(A + ii * N + kk);
-                            b = _mm256_loadu_ps(B_T + jj * N + kk);
-                            sum = _mm256_fmadd_ps(a, b, sum);
-                        }
-                        C[ii * N + jj] += _mm256_reduce_add_ps(sum);
-                    }
-                }
+                gemm_avx_block_operator(A + i * N + k, B_T + j * N + k, C + i * N + j, blockSize);
             }
         }
     }
