@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include <immintrin.h>
-#define VERIFY
+// #define VERIFY
 
 using namespace std;
 
