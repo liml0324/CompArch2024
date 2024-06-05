@@ -3,7 +3,7 @@
 #include <device_launch_parameters.h>
 // #define VERIFY
 
-#define N (1 << 12)
+#define N (1 << 14)
 
 __global__ void gemm_baseline(float *A, float *B, float *C, int n);
 void gemm_verify(float *A, float *B, float *C);
