@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
+#define BLOCK_LEN 32
 // #define VERIFY
 
-#define N (1 << 14)
+#define N (1 << 15)
 
 __global__ void gemm_baseline(float *A, float *B, float *C, int n);
 void gemm_verify(float *A, float *B, float *C);
@@ -12,9 +13,6 @@ using namespace std;
 
 int main()
 {
-    cudaDeviceProp prop;
-    cudaGetDeviceProperties(&prop, 0);
-    int max_block_thread_num = prop.maxThreadsPerBlock;
     // malloc A, B, C
     float *A = (float *)malloc(N * N * sizeof(float));
     float *B = (float *)malloc(N * N * sizeof(float));
@@ -32,16 +30,8 @@ int main()
     cudaMalloc((void**)&d_B, N * N * sizeof(float));
     cudaMalloc((void**)&d_C, N * N * sizeof(float));
     // define gridsize and blocksize
-    double temp = (double)N / sqrt(max_block_thread_num);
-    int block_num = ceil(temp);
-    int i = 1;
-    while(i > 0) {
-        if(i < block_num)   i <<= 1;
-        else    break;
-    }
-    block_num = i;
-    dim3 gridsize(block_num, block_num);
-    dim3 blocksize(N/block_num, N/block_num);
+    dim3 gridsize(N/BLOCK_LEN, N/BLOCK_LEN);
+    dim3 blocksize(BLOCK_LEN, BLOCK_LEN);
     // copy A, B to device
     cudaMemcpy(d_A, A, N * N * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, B, N * N * sizeof(float), cudaMemcpyHostToDevice);
