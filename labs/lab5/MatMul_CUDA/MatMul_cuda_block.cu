@@ -1,10 +1,14 @@
 #include <bits/stdc++.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
-#define BLOCK_LEN 32
+#ifndef BLOCK_LEN
+#define BLOCK_LEN 16
+#endif
 // #define VERIFY
 
-#define N (1 << 15)
+#ifndef N
+#define N (1 << 14)
+#endif
 
 __global__ void gemm_block(float *A, float *B, float *C, int n);
 void gemm_verify(float *A, float *B, float *C);

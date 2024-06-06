@@ -1,10 +1,14 @@
 #include <bits/stdc++.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
+#ifndef BLOCK_LEN
 #define BLOCK_LEN 32
+#endif
 // #define VERIFY
 
-#define N (1 << 15)
+#ifndef N
+#define N (1 << 14)
+#endif
 
 __global__ void gemm_baseline(float *A, float *B, float *C, int n);
 void gemm_verify(float *A, float *B, float *C);
@@ -81,7 +85,6 @@ __global__ void gemm_baseline(float* A, float * B, float* C, int n) {
         sum += A[row * n + k] * B[k * n + col];
     }
     C[row * n + col] = sum;
-    // printf("row: %d, col: %d, sum: %f\n", row, col, sum);
 }
 void gemm_verify(float *A, float *B, float *C) {
     memset(C, 0, N * N * sizeof(float));

@@ -1,4 +1,5 @@
 #include<bits/stdc++.h>
+#include<omp.h>
 
 using namespace std;
 
@@ -21,10 +22,10 @@ int main(void) {
         B[i] = distribution(generator);
     }
     // measure time
-    clock_t start = clock();
+    auto start = omp_get_wtime();
     gemm_baseline(A, B, C);
-    clock_t end = clock();
-    cout << "Time: " << 1000 * (double)(end - start) / CLOCKS_PER_SEC << "ms" << endl;
+    auto end = omp_get_wtime();
+    cout << "Time: " << 1000 * (end - start) << "ms" << endl;
     // free A, B, C
     free(A);
     free(B);
@@ -33,6 +34,7 @@ int main(void) {
 }
 void gemm_baseline(float *A, float *B, float *C) {
     memset(C, 0, N * N * sizeof(float));
+    #pragma omp parallel for
     for (int i = 0; i < N; i++) {
         for (int k = 0; k < N; k++) {
             for (int j = 0; j < N; j++) {

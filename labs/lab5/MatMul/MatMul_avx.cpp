@@ -3,8 +3,9 @@
 // #define VERIFY
 
 using namespace std;
-
-int N = (1 << 12);
+#ifndef N
+#define N (1 << 12)
+#endif
 
 void gemm_verify(float *A, float *B, float *C); // you can use inline function
 void gemm_avx(float *A, float *B, float *C); // you can use inline function
@@ -26,7 +27,7 @@ int main(void) {
     clock_t start = clock();
     gemm_avx(A, B, C);
     clock_t end = clock();
-    cout << "Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s" << endl;
+    cout << "Time: " << 1000 * (double)(end - start) / CLOCKS_PER_SEC << "ms" << endl;
     // verify
     #ifdef VERIFY
     gemm_verify(A, B, D);

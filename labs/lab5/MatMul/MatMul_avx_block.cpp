@@ -4,7 +4,12 @@
 
 using namespace std;
 
-int N = (1 << 12);
+#ifndef N
+#define N (1 << 12)
+#endif
+#ifndef BLOCK_LEN
+#define BLOCK_LEN 64
+#endif
 
 void gemm_verify(float *A, float *B, float *C); // you can use inline function
 
@@ -29,9 +34,9 @@ int main(void) {
     }
     // measure time
     clock_t start = clock();
-    gemm_avx_block(A, B, C, 16);
+    gemm_avx_block(A, B, C, BLOCK_LEN);
     clock_t end = clock();
-    cout << "Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s" << endl;
+    cout << "Time: " << 1000 * (double)(end - start) / CLOCKS_PER_SEC << "ms" << endl;
     // use gemm_baseline verify gemm_avx_block
     #ifdef VERIFY
     gemm_verify(A, B, D);
@@ -90,4 +95,5 @@ void gemm_avx_block(float *A, float *B, float *C, int blockSize) {
             }
         }
     }
+    free(B_T);
 }
