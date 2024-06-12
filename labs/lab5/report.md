@@ -137,6 +137,20 @@ __global__ void gemm_block(float *A, float *B, float *C, int n) {
 }
 ```
 
+## 编译运行
+### 编译
+我在src目录下提供了Makefile，可以利用此Makefile来进行编译。
+
+- 使用`make cpp`即可编译所有的CPU矩阵乘法代码，编译后的可执行文件位于`build`目录下。
+- 使用`make cuda`即可编译所有的CUDA矩阵乘法代码，编译后的可执行文件位于`build`目录下。
+- 使用`make all`可以编译所有代码。
+- 使用`make clean`可以清除所有编译生成的文件。
+
+另外，可以通过更改Makefile中的`MACRO`来修改矩阵大小、分块大小等参数。其中`-DN=(1 << 12)`指定了矩阵大小，`-DBLOCK_LEN=16`指定了分块大小（对于CUDA矩阵乘法，这一参数不能大于32），`-DVERIFY`如果存在，则会对计算结果进行验证。
+
+### 运行
+直接运行编译好的`.o`文件即可。
+
 ## 测试结果
 ### 测试环境和数据
 #### 测试平台
