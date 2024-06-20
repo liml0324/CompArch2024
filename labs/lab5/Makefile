@@ -2,7 +2,7 @@
 CXX = g++
 CUDA = nvcc
 FLAG = -O2 -mfma
-MACRO = "-DN=(1 << 10)" -DBLOCK_LEN=16 -DVERIFY
+MACRO = "-DN=(1 << 12)" -DBLOCK_LEN=16 -DVERIFY
 
 # 指定源文件目录和目标文件目录
 CPP_SRC_DIR = ./MatMul
@@ -12,6 +12,7 @@ CUDA_OBJ_DIR = ./build/MatMul_CUDA
 
 # 找到所有的 .cpp 文件
 CPP_SRCS = $(wildcard $(CPP_SRC_DIR)/*.cpp)
+CPP_SRCS := $(filter-out $(CPP_SRC_DIR)/MatMul_omp.cpp, $(CPP_SRCS))
 
 # 找到所有的 .cu文件
 CUDA_SRCS = $(wildcard $(CUDA_SRC_DIR)/*.cu)
